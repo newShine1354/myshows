@@ -16,10 +16,10 @@ export const TvMazeProvider = ({ children }) => {
   });
   const shows = data || [];
   const isBooked = (showId) => {
-    return bookedTickets.find((ticket) => ticket.id === showId);
+    return bookedTickets.find((ticket) => ticket._id === showId);
   };
   const deleteTicket = (showId) => {
-    setBookedTickets(bookedTickets.filter((ticket) => ticket.id !== showId));
+    setBookedTickets(bookedTickets.filter((ticket) => ticket._id !== showId));
   };
 
   const value = { shows, bookedTickets, setBookedTickets, isBooked,deleteTicket };

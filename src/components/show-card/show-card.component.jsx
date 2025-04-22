@@ -12,7 +12,7 @@ const ShowCard = ({ show, index }) => {
         {/* index */}
         <h5 className="card-index">{index + 1}</h5>
         <h5 className="card-title">{show.name}</h5>
-        <Link to={`/shows/${show.id}`} className="card-btn">
+        <Link to={`/shows/${show._id}`} className="card-btn">
           More Details
         </Link>
       </div>

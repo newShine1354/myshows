@@ -18,10 +18,12 @@
     "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "mantine-datatable": "^7.17.1",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
+    "react-hot-toast": "^2.5.2",
     "react-router": "^7.1.1",
     "scss": "^0.2.4",
     "zod": "^3.24.1"

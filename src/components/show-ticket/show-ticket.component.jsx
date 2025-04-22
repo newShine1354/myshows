@@ -10,7 +10,8 @@ import { useContext } from "react";
 import { TvMazeContext } from "@/contexts/tv-maze-api.context";
 
 const ShowTicket = ({ ticket }) => {
-  const { id, showName, ticketDetails } = ticket;
+  const { _id, showName, ticketDetails } = ticket;
+  console.log('_id', _id)
   const { name, email, phone, date, time, seats } = ticketDetails;
   const { deleteTicket } = useContext(TvMazeContext);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +24,7 @@ const ShowTicket = ({ ticket }) => {
   };
 
   const handleDeleteTicket = () => {
-    deleteTicket(id);
+    deleteTicket(_id);
     handleBackToDetails();
   };
 
@@ -32,7 +33,7 @@ const ShowTicket = ({ ticket }) => {
       <div className="ticket-container">
         <div className="header border-bottom mb-4 ">
           <div className="show-info ">
-            <div className="badge badge-dark bg-dark">Show ID: {id}</div>
+            <div className="badge badge-dark bg-dark">Show _id: {_id}</div>
             <h2 className="fw-bolder my-1"> {showName}</h2>
             <p className="display-1">Show this ticket at the entrance</p>
           </div>

@@ -2,28 +2,29 @@ import React,{ useContext } from "react";
 import { Link } from "react-router";
 import { TvMazeContext } from "../../contexts/tv-maze-api.context";
 
-const ShowInfo = ({ showDetails, handleProcessToBookTicket }) => {
+const ShowInfo = ({ details, handleProcessToBookTicket }) => {
   const { isBooked } = useContext(TvMazeContext);
+  console.log('detials', details)
   return (
     <>
       <div className="col-md-6">
         <h3>Type</h3>
-        <p>{showDetails.type}</p>
+        <p>{details.type}</p>
         <h3>Language</h3>
-        <p>{showDetails.language}</p>
+        <p>{details.language}</p>
         <h3>Genere</h3>
-        <p>{showDetails.genres.map((genre) => genre + ", ")}</p>
+        <p>{details.genres.map((genre) => genre + ", ")}</p>
       </div>
       <div className="col-md-6">
         <h3>Official Site</h3>
-        <p>{showDetails.officialSite}</p>
+        <p>{details.officialSite}</p>
         <h3>Schedule</h3>
         <p>
-          {showDetails.schedule.days.map((day) => day + " ")}, {showDetails.schedule.time}
+          {details.schedule.days.map((day) => day + " ")}, {details.schedule.time}
         </p>
 
         <h3>Avarage Runtime</h3>
-        <p>{showDetails.averageRuntime}</p>
+        <p>{details.averageRuntime}</p>
       </div>
       <div className="mobile-screen-btn row w-100 ">
         <div className="col-md-4 mt-4">
@@ -33,7 +34,7 @@ const ShowInfo = ({ showDetails, handleProcessToBookTicket }) => {
         </div>
         <div className="col-md-8 mt-4">
           <button className="show-btn dark" onClick={handleProcessToBookTicket}>
-            {isBooked(showDetails.id) ? "View Ticket" : "Process to Book Ticket"}
+            {isBooked(details?._id) ? "View Ticket" : "Process to Book Ticket"}
           </button>
         </div>
       </div>

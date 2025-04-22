@@ -1,0 +1,1 @@
+export const commonRoute = 'http://localhost:5000/api'

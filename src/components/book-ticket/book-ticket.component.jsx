@@ -9,6 +9,9 @@ import "./book-ticket.styles.scss";
 import ShowTicket from "../show-ticket/show-ticket.component";
 import { useContext } from "react";
 import { TvMazeContext } from "../../contexts/tv-maze-api.context";
+import axios from "axios";
+import { commonRoute } from "../../../constants";
+import { useUser } from "@/contexts/user.context";
 
 const schema = z.object({
   name: z.string().min(3, "Name is too short"),
@@ -19,12 +22,22 @@ const schema = z.object({
   seats: z.string().regex(/^\d+$/, "Invalid seats"),
 });
 
-const BookTicket = ({ showDetails, handleBackToDetails }) => {
+const BookTicket = ({ details, handleBackToDetails }) => {
   const { isBooked, bookedTickets, setBookedTickets } = useContext(TvMazeContext);
   4;
-  const bookedShow = isBooked(showDetails.id);
+  const bookedShow = isBooked(details._id);
   const [searchParams, setSearchParams] = useSearchParams();
   const editTicket = searchParams.get("edit") === "true";
+  const {user} = useUser();
+  const handleBookTicket = async()=> {
+    const data = await axios.put(`${commonRoute}/show`, {id: details._id}, {
+      headers: {
+        Authorization: user.token,
+        'Content-Type': 'application/json',
+      },
+    })
+    console.log('data', data)
+  }
   const {
     register,
     handleSubmit,
@@ -36,16 +49,17 @@ const BookTicket = ({ showDetails, handleBackToDetails }) => {
   });
   const onSubmit = (data) => {
     const newTicket = {
-      ...showDetails,
+      ...details,
       ticketDetails: data,
     };
     if (bookedShow) {
-      const existingTicketIndex = bookedTickets.findIndex((ticket) => ticket.id === showDetails.id);
+      const existingTicketIndex = bookedTickets.findIndex((ticket) => ticket._id === details._id);
       const updatedTickets = [...bookedTickets];
       updatedTickets[existingTicketIndex] = newTicket;
       setBookedTickets(updatedTickets);
     } else {
       setBookedTickets([...bookedTickets, newTicket]);
+      handleBookTicket();
     }
     setSearchParams({ booking: "true", edit: "false" });
   };
