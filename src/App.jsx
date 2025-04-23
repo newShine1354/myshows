@@ -13,22 +13,21 @@ import TvMazeApi from "./api/tv-maze.api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUser } from "./contexts/user.context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faVideo } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { commonRoute } from "../constants";
 
 function App() {
   const { shows, bookedTickets } = useContext(TvMazeContext);
   const { user, logout } = useUser();
-  const [searchResults, setSearchResults] = useState([])
-  const navigate = useNavigate()
+  const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchTerm = searchParams.get("search") || "";
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const bookedTab = searchParams.get("booked") === "true";
-
 
   const handleSearchChange = (event) => {
     setSearchParams({ search: event.target.value });
@@ -40,46 +39,67 @@ function App() {
     }
   }, []);
 
-
   const getAllShows = async () => {
     const data = await axios.get(`${commonRoute}/show`, {
       headers: {
         Authorization: user.token,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-    })
-    setSearchResults(data?.data?.data || [])
-  }
-
+    });
+    setSearchResults(data?.data?.data || []);
+  };
 
   useEffect(() => {
     if (bookedTab) {
-      setSearchResults(bookedTickets)
+      setSearchResults(bookedTickets);
     } else if (user.token) {
       getAllShows();
     }
+  }, [searchParams, user.token]);
 
-  }, [searchParams, user.token])
-
+  useEffect(() => {
+    if (!user.isLoggedIn) {
+      logout();
+    }
+  }, []);
 
   return (
-
     <div className="App position-relative">
       <div className="container-fluid main-hero">
         <div className="row">
           <div className="col-md-12 hero-text">
-            <button className="position-absolute btn btn-warning" style={{ top: -130, right: 30 }} onClick={logout}>Logout <FontAwesomeIcon icon={faSignOutAlt} size="lg" /></button>
+            <button
+              className="position-absolute btn btn-warning"
+              style={{ top: -130, right: 30 }}
+              onClick={logout}
+            >
+              Logout <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
+            </button>
+            {user.role === "ADMIN" && (
+              <button
+                className="position-absolute btn btn-warning"
+                style={{ top: -130, left: 30 }}
+                onClick={() => navigate("/tickets")}
+              >
+                Tickets 🎟️
+              </button>
+            )}
             <h1 className="text-center">Book Your SHOWS</h1>
           </div>
         </div>
       </div>
       <div className="d-flex justify-content-center">
         <div className="btn-group btn-group-toggle ">
-
-          <Link to="?booked=false" className={`btn btn-dark ${!bookedTab ? "active" : ""}`}>
+          <Link
+            to="?booked=false"
+            className={`btn btn-dark ${!bookedTab ? "active" : ""}`}
+          >
             All Shows
           </Link>
-          <Link to="?booked=true" className={`btn btn-dark ${bookedTab ? "active" : ""}`}>
+          <Link
+            to="?booked=true"
+            className={`btn btn-dark ${bookedTab ? "active" : ""}`}
+          >
             Booked
           </Link>
         </div>
@@ -101,7 +121,9 @@ function App() {
               <h2>{false ? "Loading..." : "No Shows Found"}</h2>
             </div>
           ) : (
-            searchResults.map((show, index) => <ShowCard key={show._id} show={show} index={index} />)
+            searchResults.map((show, index) => (
+              <ShowCard key={show._id} show={show} index={index} />
+            ))
           )}
         </>
       </div>

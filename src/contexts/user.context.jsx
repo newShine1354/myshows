@@ -1,37 +1,59 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { commonRoute } from '../../constants';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { commonRoute } from "../../constants";
 
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : { email: '', username: '', isLoggedIn: false, token: '' };
+    const storedUser = localStorage.getItem("user");
+    return storedUser
+      ? JSON.parse(storedUser)
+      : { email: "", username: "", isLoggedIn: false, token: "", role: "" };
   });
 
-  const login = (email, username, token) => {
-    const userData = { email, username, isLoggedIn: true, token };
+  const login = (email, username, token, role) => {
+    const userData = { email, username, isLoggedIn: true, token, role };
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));  
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
     if (user?.token) {
-      axios.post(`${commonRoute}/auth/logout`, {}, {
-        headers: {
-          Authorization: user.token,
-          'Content-Type': 'application/json',
-        },
-      }).then(() => {
-        setUser({ email: '', username: '', isLoggedIn: false, token: '' });
-        localStorage.removeItem('user');  
-      }).catch((error) => {
-        console.error("Logout error:", error);
-      });
+      axios
+        .post(
+          `${commonRoute}/auth/logout`,
+          {},
+          {
+            headers: {
+              Authorization: user.token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          setUser({
+            email: "",
+            username: "",
+            isLoggedIn: false,
+            token: "",
+            role: "",
+          });
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
     } else {
-      setUser({ email: '', username: '', isLoggedIn: false, token: '' });
-      localStorage.removeItem('user'); 
+      setUser({
+        email: "",
+        username: "",
+        isLoggedIn: false,
+        token: "",
+        role: "",
+      });
+      localStorage.removeItem("user");
     }
   };
 
@@ -45,7 +67,7 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };
